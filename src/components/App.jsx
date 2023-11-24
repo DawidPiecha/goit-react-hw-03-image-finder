@@ -1,31 +1,37 @@
 import React, { Component } from 'react';
 import { fetchImageGallery } from './ImagesApi/ImagesApi';
-import { Searchbar } from './Searchbar/Seachbar';
+import Searchbar from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
+import { Notify } from 'notiflix';
 
 class App extends Component {
   state = {
     images: [],
-    searchInputTerm: '',
     page: 1,
   };
 
-  handleSearch = async () => {
-    const { searchInputTerm } = this.state;
+  handleSearch = async searchTerm => {
     const { page } = this.state;
+
+    //jeśli zawartość inputa jest pusta następuje blokada wyszukiwania i komunikat dla użytkownika
+
+    if (searchTerm.trim() === '') {
+      Notify.info('Please enter a term to search something');
+      return;
+    }
     try {
-      const data = await fetchImageGallery(searchInputTerm, page);
+      const data = await fetchImageGallery(searchTerm, page);
 
       if (data.hits) {
-        this.setState({ images: data.hits });
+        this.setState({ images: data.hits }, () => {
+          Notify.success(
+            `We have found ${this.state.images.length} images for "${searchTerm}" `
+          );
+        });
       }
     } catch (error) {
       console.log('Error fetching images:', error);
     }
-  };
-
-  handleInputChange = event => {
-    this.setState({ searchInputTerm: event.target.value });
   };
 
   render() {
@@ -33,10 +39,7 @@ class App extends Component {
 
     return (
       <div className="App">
-        <Searchbar
-          handleSearch={this.handleSearch}
-          handleInputChange={this.handleInputChange}
-        />
+        <Searchbar onSubmit={this.handleSearch} />
         <ImageGallery images={images} />
       </div>
     );
