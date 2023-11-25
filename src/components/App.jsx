@@ -5,6 +5,7 @@ import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Notify } from 'notiflix';
 import { Button } from './Button/Button';
 import { Loader } from './Loader/Loader';
+import { Modal } from './Modal/Modal';
 
 class App extends Component {
   state = {
@@ -13,6 +14,8 @@ class App extends Component {
     searchTerm: '',
     totalImages: null,
     isLoading: false,
+    showModal: false,
+    selectedImage: '',
   };
 
   handleSearch = async searchTerm => {
@@ -23,6 +26,7 @@ class App extends Component {
     //jeśli zawartość inputa jest pusta następuje blokada wyszukiwania i komunikat dla użytkownika
 
     if (searchTerm.trim() === '') {
+      this.setState({ isLoading: false });
       Notify.info('Please enter a term to search something');
       return;
     }
@@ -90,15 +94,38 @@ class App extends Component {
     }
   };
 
+  handleImageClick = imageUrl => {
+    this.setState({ showModal: true, selectedImage: imageUrl });
+  };
+  handleModalClose = () => {
+    this.setState({ showModal: false, selectedImage: '' });
+  };
+
+  componentDidMount() {
+    window.addEventListener('keyup', this.handleKeyUp);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('keyup', this.handleKeyUp);
+  }
+
+  handleKeyUp = event => {
+    const { showModal } = this.state;
+    if (event.key === 'Escape' && showModal) {
+      this.handleModalClose();
+    }
+  };
+
   render() {
-    const { images, page, totalImages, isLoading } = this.state;
+    const { images, page, totalImages, isLoading, showModal, selectedImage } =
+      this.state;
     const hasMoreImages = images.length >= page * 12;
     const noMoreImages = images.length === totalImages;
 
     return (
       <div className="App">
         <Searchbar onSubmit={this.handleSearch} />
-        <ImageGallery images={images} />
+        <ImageGallery images={images} onImageClick={this.handleImageClick} />
         {isLoading && <Loader />}
         {hasMoreImages && (
           <React.Fragment>
@@ -108,6 +135,12 @@ class App extends Component {
         )}
         {noMoreImages && (
           <p className="infoForUser">{`We've already found ${images.length} images from ${totalImages} available.`}</p>
+        )}
+        {showModal && (
+          <Modal
+            imageUrl={selectedImage}
+            onModalClose={this.handleModalClose}
+          />
         )}
       </div>
     );

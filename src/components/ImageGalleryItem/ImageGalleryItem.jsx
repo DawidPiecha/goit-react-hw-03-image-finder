@@ -1,12 +1,13 @@
 import css from './ImageGalleryItem.module.css';
 
-const ImageGalleryItem = ({ imageUrl, alt }) => (
+const ImageGalleryItem = ({ imageUrl, alt, onImageClick }) => (
   <li className={css.ImageGalleryItem}>
     <img
       className={css.ImageGalleryItemImage}
       src={imageUrl}
       alt={alt}
       loading="lazy"
+      onClick={onImageClick}
     />
   </li>
 );
