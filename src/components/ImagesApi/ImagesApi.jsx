@@ -8,7 +8,11 @@ const fetchImageGallery = async (searchInputTerm, page) => {
   try {
     const response = await axios.get(url);
     console.log('Response from API:', response.data);
-    return response.data;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve(response.data);
+      }, 2000);
+    });
   } catch (error) {
     console.log('fetchImageGallery error:', error);
   }
