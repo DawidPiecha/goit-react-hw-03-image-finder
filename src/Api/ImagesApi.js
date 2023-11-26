@@ -9,7 +9,7 @@ const fetchImageGallery = async (searchInputTerm, page) => {
   const url = `?q=${searchInputTerm}&page=${page}&key=${apiKey}&image_type=photo&orientation=horizontal&per_page=${imagesPerPage}`;
   try {
     const response = await axios.get(url);
-    console.log('Response from API:', response.data);
+
     return new Promise(resolve => {
       setTimeout(() => {
         resolve(response.data);

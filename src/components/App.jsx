@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { fetchImageGallery } from './ImagesApi/ImagesApi';
+import { fetchImageGallery } from '../Api/ImagesApi';
 import Searchbar from './Searchbar/Searchbar';
 import { ImageGallery } from './ImageGallery/ImageGallery';
 import { Notify } from 'notiflix';
@@ -101,21 +101,6 @@ class App extends Component {
     this.setState({ showModal: false, selectedImage: '' });
   };
 
-  componentDidMount() {
-    window.addEventListener('keyup', this.handleKeyUp);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keyup', this.handleKeyUp);
-  }
-
-  handleKeyUp = event => {
-    const { showModal } = this.state;
-    if (event.key === 'Escape' && showModal) {
-      this.handleModalClose();
-    }
-  };
-
   render() {
     const { images, page, totalImages, isLoading, showModal, selectedImage } =
       this.state;
@@ -128,10 +113,10 @@ class App extends Component {
         <ImageGallery images={images} onImageClick={this.handleImageClick} />
         {isLoading && <Loader />}
         {hasMoreImages && (
-          <React.Fragment>
+          <>
             <p className="infoForUser">{`We've already found ${images.length} images from ${totalImages} available.`}</p>
             <Button onClick={this.loadMoreImages} disabled={false} />
-          </React.Fragment>
+          </>
         )}
         {noMoreImages && (
           <p className="infoForUser">{`We've already found ${images.length} images from ${totalImages} available.`}</p>
@@ -140,6 +125,7 @@ class App extends Component {
           <Modal
             imageUrl={selectedImage}
             onModalClose={this.handleModalClose}
+            showModal={showModal}
           />
         )}
       </div>
