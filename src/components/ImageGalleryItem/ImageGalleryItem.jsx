@@ -7,7 +7,6 @@ const ImageGalleryItem = ({ imageUrl, alt, onImageClick }) => (
       className={css.ImageGalleryItemImage}
       src={imageUrl}
       alt={alt}
-      loading="lazy"
       onClick={onImageClick}
     />
   </li>

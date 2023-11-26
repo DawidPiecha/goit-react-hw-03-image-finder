@@ -114,12 +114,16 @@ class App extends Component {
         {isLoading && <Loader />}
         {hasMoreImages && (
           <>
-            <p className="infoForUser">{`We've already found ${images.length} images from ${totalImages} available.`}</p>
+            <p className="infoForUser">{`We've already found ${
+              images.length
+            } ${this.state.searchTerm.toUpperCase()} images from ${totalImages} available.`}</p>
             <Button onClick={this.loadMoreImages} disabled={false} />
           </>
         )}
         {noMoreImages && (
-          <p className="infoForUser">{`We've already found ${images.length} images from ${totalImages} available.`}</p>
+          <p className="infoForUser">{`We've already found ${
+            images.length
+          } ${this.state.searchTerm.toUpperCase()} images from ${totalImages} available.`}</p>
         )}
         {showModal && (
           <Modal
